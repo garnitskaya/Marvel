@@ -20,7 +20,7 @@ class CharInfo extends Component {
         this.updateChar();
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps) {//вызывается сразу после обновления. Не вызывается при первом рендере.
         if (this.props.charId !== prevProps.charId) {
             this.updateChar();
         }
@@ -38,6 +38,7 @@ class CharInfo extends Component {
             .getCharacter(charId)
             .then(this.onCharLoaded)
             .catch(this.onError)
+
     }
 
     onCharLoading = () => {
