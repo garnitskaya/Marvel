@@ -1,4 +1,6 @@
 import { Component } from 'react';
+import { PropTypes } from 'prop-types';
+
 import MarvelService from './../../services/MarvelService';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
@@ -68,7 +70,7 @@ class CharList extends Component {
                 <li
                     className="char__item"
                     key={id}
-                    onClick={() => this.props.onCharSelected(id)} >
+                    onClick={() => this.props.onCharSelected(id)}>
                     <img src={thumbnail} alt="abyss" style={imgStyle} />
                     <div className="char__name">{name}</div>
                 </li>
@@ -107,5 +109,8 @@ class CharList extends Component {
     }
 }
 
+CharList.propTypes = {
+    onCharSelected: PropTypes.func
+}
 
 export default CharList;
