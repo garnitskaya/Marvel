@@ -48,7 +48,7 @@ const CharList = (props) => {
         itemRefs.current[id].focus();
     }
 
-    const rendetItem = (arr) => {
+    const renderItem = (arr) => {
         const items = arr.map((item, i) => {
             const { id, name, thumbnail } = item;
             let imgStyle = { 'objectFit': 'cover' };
@@ -84,7 +84,7 @@ const CharList = (props) => {
         )
     }
 
-    const items = rendetItem(charList);
+    const items = renderItem(charList);
 
     const spinner = loading && !newItemLoading ? <Spinner /> : null;
     const errorMessage = error ? <ErrorMessage /> : null;
