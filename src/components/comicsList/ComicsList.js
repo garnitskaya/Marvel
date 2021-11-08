@@ -38,11 +38,11 @@ const ComicsList = () => {
     }
 
     const renderItems = (arr) => {
-        const items = arr.map(item => {
-            const { id, thumbnail, title, prices } = item;
+        const items = arr.map((item, i) => {
+            const { thumbnail, title, prices } = item;
             return (
                 <li
-                    key={id}
+                    key={i}
                     className="comics__item">
                     <a href="#s">
                         <img src={thumbnail} alt="ultimate war" className="comics__item-img" />
