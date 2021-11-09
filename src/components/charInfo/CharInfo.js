@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import useMarvelService from './../../services/MarvelService';
@@ -52,6 +53,11 @@ const CharInfo = (props) => {
 const View = ({ char }) => {
     const { name, description, thumbnail, homepage, wiki, comics } = char;
 
+    const extractId = (item) => {
+        const idRegExp = /\/([0-9]*)$/;
+        return item.match(idRegExp)[1];
+    }
+
     let imgStyle = { 'objectFit': 'cover' }
     if (thumbnail === "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg") {
         imgStyle = { 'objectFit': 'unset' }
@@ -80,12 +86,15 @@ const View = ({ char }) => {
             <ul className="char__comics-list">
                 {comics.length > 0 ? null : 'There is no comics with this character'}
                 {
-                    comics.map((item, i) => {
+                    comics.map(({ resourceURI, name }, i) => {
                         // eslint-disable-next-line
                         if (i > 9) return; //если i>9 то верстку не возвращаем
+
+                        let comicId = extractId(resourceURI)
+
                         return (
                             <li key={i} className="char__comics-item">
-                                {item.name}
+                                <Link to={`/comics/${comicId}`}>{name}</Link>
                             </li>)
                     })
                 }
