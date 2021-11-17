@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { PropTypes } from 'prop-types';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import useMarvelService from './../../services/MarvelService';
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -57,30 +58,34 @@ const CharList = (props) => {
             }
 
             return (
-                <li
-                    className="char__item"
-                    tabIndex={0}
-                    ref={el => itemRefs.current[i] = el} //все элементы по порядку в этом массиве складываем в дом элемент
-                    key={id}
-                    onClick={() => {
-                        props.onCharSelected(id);
-                        focusOnItem(i);
-                    }}
-                    onKeyPress={(e) => {
-                        if (e.key === '' || e.key === 'Enter') {
+                <CSSTransition key={id} timeout={500} classNames="char__item">
+                    <li
+                        className="char__item"
+                        tabIndex={0}
+                        ref={el => itemRefs.current[i] = el} //все элементы по порядку в этом массиве складываем в дом элемент
+                        onClick={() => {
                             props.onCharSelected(id);
                             focusOnItem(i);
-                        }
-                    }}>
-                    <img src={thumbnail} alt="abyss" style={imgStyle} />
-                    <div className="char__name">{name}</div>
-                </li>
+                        }}
+                        onKeyPress={(e) => {
+                            if (e.key === '' || e.key === 'Enter') {
+                                props.onCharSelected(id);
+                                focusOnItem(i);
+                            }
+                        }}>
+                        <img src={thumbnail} alt="abyss" style={imgStyle} />
+                        <div className="char__name">{name}</div>
+                    </li>
+                </CSSTransition>
             )
         })
         return (
             <ul className="char__grid">
-                {items}
+                <TransitionGroup component={null}>
+                    {items}
+                </TransitionGroup>
             </ul>
+
         )
     }
 
