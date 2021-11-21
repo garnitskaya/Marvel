@@ -7,6 +7,7 @@ import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
 
 import './charList.scss';
+import { Link } from 'react-router-dom';
 
 
 const CharList = (props) => {
@@ -74,7 +75,7 @@ const CharList = (props) => {
                             }
                         }}>
                         <img src={thumbnail} alt="abyss" style={imgStyle} />
-                        <div className="char__name">{name}</div>
+                        <Link to={`/characters/${id}`} className="char__name">{name}</Link>
                     </li>
                 </CSSTransition>
             )

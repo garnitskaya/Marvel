@@ -62,5 +62,10 @@
         line-height: 29px;
         text-transform: uppercase;
         color: #fff;
+        transition: .5s all;
+
+        &:hover {
+            color: $main-color;
+        }
     }
 }

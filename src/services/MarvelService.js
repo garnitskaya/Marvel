@@ -4,12 +4,17 @@ const useMarvelService = () => {
     const { loading, request, error, clearError } = useHttp();
 
     const _apiBase = 'https://gateway.marvel.com:443/v1/public/';
-    const _apiKey = 'apikey=79716fd15a414c8591c4ad962265a56d';
+    const _apiKey = 'apikey=3c5498a9e3906f29fcb8095ed269b208';
     const _baseOffset = 210;
 
     const getAllCharacters = async (offset = _baseOffset) => {
         const res = await request(`${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`);//что бы переменная сформировалась т.к. асинхронная операция, указываем async/await
         return res.data.results.map(_transformCharacter);//в map передаем callback ф-цию, которая будет чтото делать с каждым эл который приходит к ней по очеди с res и формировать массив с объектами
+    }
+
+    const getCharacterByName = async (name) => {
+        const res = await request(`${_apiBase}characters?name=${name}&${_apiKey}`);//что бы переменная сформировалась т.к. асинхронная операция, указываем async/await
+        return res.data.results.map(_transformCharacter);
     }
 
     const getCharacter = async (id) => {
@@ -51,7 +56,7 @@ const useMarvelService = () => {
         }
     }
 
-    return { loading, error, clearError, getAllCharacters, getCharacter, getAllComics, getComic };
+    return { loading, error, clearError, getAllCharacters, getCharacter, getAllComics, getComic, getCharacterByName };
 }
 
 export default useMarvelService;
