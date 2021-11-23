@@ -1,14 +1,27 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import useMarvelService from './../../services/MarvelService';
-import ErrorMessage from '../errorMessage/ErrorMessage';
-import Spinner from '../spinner/Spinner';
+import Spinner from './../spinner/Spinner';
+import ErrorMessage from './../errorMessage/ErrorMessage';
 
 import './charList.scss';
-import { Link } from 'react-router-dom';
 
+const setContent = (process, Component, newItemLoading) => {
+    switch (process) {
+        case 'waiting':
+            return <Spinner />;
+        case 'loading':
+            return newItemLoading ? <Component /> : <Spinner />;//если грузятся новые элементы, то рендерим компонент, если нет, то это первая загрузка и рендерим спиннер 
+        case 'confirmed':
+            return <Component />;
+        case 'error':
+            return <ErrorMessage />;
+        default:
+            throw new Error('Unexpected process state');
+    }
+}
 
 const CharList = (props) => {
 
@@ -17,10 +30,11 @@ const CharList = (props) => {
     const [offset, setOffset] = useState(210);
     const [charEnded, setCharEnded] = useState(false);
 
-    const { loading, error, getAllCharacters } = useMarvelService();
+    const { getAllCharacters, process, setProcess } = useMarvelService();
 
     useEffect(() => {
         onRequest(offset, true);
+        // eslint-disable-next-line
     }, [])
 
     const onRequest = (offset, initial) => {
@@ -28,6 +42,7 @@ const CharList = (props) => {
 
         getAllCharacters(offset)
             .then(onCharListLoaded)
+            .then(() => setProcess('confirmed'));
     }
 
     const onCharListLoaded = (newCharList) => { //персонажи загрузились(успешная загрузка)
@@ -59,47 +74,41 @@ const CharList = (props) => {
             }
 
             return (
-                <CSSTransition key={id} timeout={500} classNames="char__item">
-                    <li
-                        className="char__item"
-                        tabIndex={0}
-                        ref={el => itemRefs.current[i] = el} //все элементы по порядку в этом массиве складываем в дом элемент
-                        onClick={() => {
+                <li
+                    key={id}
+                    className="char__item"
+                    tabIndex={0}
+                    ref={el => itemRefs.current[i] = el} //все элементы по порядку в этом массиве складываем в дом элемент
+                    onClick={() => {
+                        props.onCharSelected(id);
+                        focusOnItem(i);
+                    }}
+                    onKeyPress={(e) => {
+                        if (e.key === '' || e.key === 'Enter') {
                             props.onCharSelected(id);
                             focusOnItem(i);
-                        }}
-                        onKeyPress={(e) => {
-                            if (e.key === '' || e.key === 'Enter') {
-                                props.onCharSelected(id);
-                                focusOnItem(i);
-                            }
-                        }}>
-                        <img src={thumbnail} alt="abyss" style={imgStyle} />
-                        <Link to={`/characters/${id}`} className="char__name">{name}</Link>
-                    </li>
-                </CSSTransition>
+                        }
+                    }}>
+                    <img src={thumbnail} alt="abyss" style={imgStyle} />
+                    <Link to={`/characters/${id}`} className="char__name">{name}</Link>
+                </li>
             )
         })
         return (
             <ul className="char__grid">
-                <TransitionGroup component={null}>
-                    {items}
-                </TransitionGroup>
+                {items}
             </ul>
-
         )
     }
 
-    const items = renderItem(charList);
-
-    const spinner = loading && !newItemLoading ? <Spinner /> : null;
-    const errorMessage = error ? <ErrorMessage /> : null;
+    const elements = useMemo(() => {
+        return setContent(process, () => renderItem(charList), newItemLoading);
+        // eslint-disable-next-line 
+    }, [process]);
 
     return (
         <div className="char__list">
-            {spinner}
-            {errorMessage}
-            {items}
+            {elements}
             <button
                 className="button button__main button__long"
                 disabled={newItemLoading}
@@ -109,7 +118,6 @@ const CharList = (props) => {
             </button>
         </div >
     )
-
 }
 
 CharList.propTypes = {

@@ -3,16 +3,16 @@ import { useEffect, useState } from 'react';
 import useMarvelService from './../../services/MarvelService';
 
 import AppBanner from '../appBanner/AppBanner';
-import ErrorMessage from './../errorMessage/ErrorMessage';
-import Spinner from '../spinner/Spinner';
+import setContent from './../../utils/setContent';
 
 const SinglePage = ({ Component, dataType }) => {
     const { id } = useParams();
     const [data, setData] = useState(null);
-    const { loading, error, getComic, clearError, getCharacter } = useMarvelService();
+    const { getComic, clearError, getCharacter, process, setProcess } = useMarvelService();
 
     useEffect(() => {
         updateData();
+        // eslint-disable-next-line
     }, [id]);
 
     const updateData = () => {
@@ -22,9 +22,11 @@ const SinglePage = ({ Component, dataType }) => {
             case 'comic':
                 return getComic(id)
                     .then(onDataLoaded)
+                    .then(() => setProcess('confirmed'))
             case 'character':
                 return getCharacter(id)
                     .then(onDataLoaded)
+                    .then(() => setProcess('confirmed'))
             default:
                 break;
         }
@@ -33,16 +35,11 @@ const SinglePage = ({ Component, dataType }) => {
     const onDataLoaded = (data) => {
         setData(data);
     }
-    const errorMessage = error ? <ErrorMessage /> : null;
-    const spinner = loading ? <Spinner /> : null;
-    const content = !(error || loading || !data) ? <Component data={data} /> : null;
 
     return (
         <>
             <AppBanner />
-            {errorMessage}
-            {spinner}
-            {content}
+            {setContent(process, Component, data)}
         </>
     )
 }
