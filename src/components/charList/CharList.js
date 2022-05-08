@@ -90,7 +90,7 @@ const CharList = (props) => {
                         }
                     }}>
                     <img src={thumbnail} alt="abyss" style={imgStyle} />
-                    <Link to={`/characters/${id}`} className="char__name">{name}</Link>
+                    <Link to={`/Marvel/characters/${id}`} className="char__name">{name}</Link>
                 </li>
             )
         })

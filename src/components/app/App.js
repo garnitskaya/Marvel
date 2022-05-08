@@ -19,16 +19,16 @@ const App = () => {
                 <main>
                     <Suspense fallback={<Spinner />}>
                         <Switch>
-                            <Route exact path="/" >
+                            <Route exact path="/Marvel" >
                                 <MainPage />
                             </Route>
-                            <Route exact path="/comics">
+                            <Route exact path="/Marvel/comics">
                                 <ComicsPage />
                             </Route>
-                            <Route exact path="/comics/:id">
+                            <Route exact path="/Marvel/comics/:id">
                                 <SinglePage Component={SingleComicLayout} dataType='comic' />
                             </Route>
-                            <Route exact path="/characters/:id">
+                            <Route exact path="/Marvel/characters/:id">
                                 <SinglePage Component={SingleCharacterLayout} dataType='character' />
                             </Route>
                             <Route path="*">
