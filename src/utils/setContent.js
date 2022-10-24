@@ -19,3 +19,5 @@ const setContent = (process, Component, data) => {
 }
 
 export default setContent;
+
+
